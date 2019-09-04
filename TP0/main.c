@@ -43,18 +43,18 @@ int main(int argc, char * argv []){
     if (!archivo_entrada || !archivo_salida){fprintf(stderr, "File not found \n"); return 1;}
 		
     char * linea = NULL;
-    size_t cant = 0;
+    size_t cant = 1024;
 	ssize_t leidos;
-    double dimension;
+    //double dimension;
 	while ((leidos = getline (&linea, &cant, archivo_entrada) > 0)){
-        fscanf(archivo_entrada, "%le", &dimension);
+       // fscanf(archivo_entrada, "%le", &dimension);
 
         // Separar double
         // matrix_t* matrixA = create_matrix(dimension,dimension);
         // Crear matriz B
         // Multiplicar matrices
         // Imprimir en archivo salida/archivo error
-
+		printf("%s",linea);
     }
 
     fclose(archivo_entrada);
