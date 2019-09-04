@@ -1,6 +1,8 @@
 #define _POSIX_C_SOURCE 200809L
 #include <getopt.h>
 #include "matrix.h"
+#include <math.h>
+#include <stdio.h>
 
 const char HELP[] = "Usage:\n \ttp0 -h \n\ttp0 -V\n\ttp0 < in_file > out_file\n\nOptions:\n\t-V, --version Print version and quit.\n\t-h, --help Print this information and quit.\nExamples:\n\ttp0 < in.txt > out.txt\n\tcat in.txt | tp0 > out.txt" ;
 const char VERSION[] = "XXXXXXXXXXXXXXXXXXXXXXXx\n"; // Buscar version
@@ -40,22 +42,51 @@ int main(int argc, char * argv []){
 	
     archivo_entrada = fopen(argv[1],"r");
     archivo_salida = fopen(argv[2], "w"); 
-    if (!archivo_entrada || !archivo_salida){fprintf(stderr, "File not found \n"); return 1;}
-		
-    char * linea = NULL;
-    size_t cant = 1024;
-	ssize_t leidos;
-    //double dimension;
-	while ((leidos = getline (&linea, &cant, archivo_entrada) > 0)){
-       // fscanf(archivo_entrada, "%le", &dimension);
+    
+    if (!archivo_entrada || !archivo_salida){
+		fprintf(stderr, "File not found \n"); 
+		return 1;
+	}
+	
+	int dimension,cant_num,status,leidos = 0;
+	//deberia ser de double para pasar a la matriz
+    float cadena[1024];
+    char temp;
+    fscanf(archivo_entrada,"%d ",&dimension);
+    printf("dimension: %d\n", dimension);
+    cant_num = pow( dimension, 2) * 2;
+    while(true){
+		if(leidos > cant_num){
+			fprintf(stderr, "Error: Archivo invalido. \n"); 
+			return 1;
+		}
+		status = fscanf(archivo_entrada,"%g",&cadena[leidos]);
+		fscanf (archivo_entrada, "%c" , &temp);
+		printf("caracter: (%c)",temp);
+		if(temp == '\n' && leidos != cant_num){
+			fprintf(stderr, "Error: Archivo invalido. \n"); 
+			return 1;
+		}
+		if((status == EOF && leidos != cant_num) || status == 0){
+			fprintf(stderr, "Error: Archivo invalido. \n"); 
+			return 1;	
+		}
+		leidos++;
+		printf("leidos: %d  status: %d\n",leidos,status);
+	}
+	
+	for(int i = 0; i < cant_num; i++) {
+		printf("%f\t",cadena[i]);
+	}
+	printf("\n");
+	printf("listo\n");
 
         // Separar double
         // matrix_t* matrixA = create_matrix(dimension,dimension);
         // Crear matriz B
         // Multiplicar matrices
         // Imprimir en archivo salida/archivo error
-		printf("%s",linea);
-    }
+		
 
     fclose(archivo_entrada);
     fclose(archivo_salida); 
