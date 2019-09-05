@@ -9,7 +9,17 @@ const char VERSION[] = "XXXXXXXXXXXXXXXXXXXXXXXx\n"; // Buscar version
 static struct option long_options[] = {
     {"version",  no_argument, 0,  0 }, 
     {"help",  no_argument, 0,  0 }
-};        
+};  
+
+int cantidad_numeros(FILE* in){
+	int dimension;
+	int dim_status = fscanf(in,"%d ",&dimension);
+	//printf("status: %d\tdimension: %d\n", dim_status,dimension);
+	if(dim_status == -1){
+		return -1;
+	}
+	return pow( dimension, 2) * 2;
+}      
 
 
 int main(int argc, char * argv []){
@@ -48,38 +58,57 @@ int main(int argc, char * argv []){
 		return 1;
 	}
 	
-	int dimension,cant_num,status,leidos = 0;
+	int cant_num,status,leidos = 0;
 	//deberia ser de double para pasar a la matriz
     float cadena[1024];
     char temp;
-    fscanf(archivo_entrada,"%d ",&dimension);
-    printf("dimension: %d\n", dimension);
-    cant_num = pow( dimension, 2) * 2;
+    cant_num = cantidad_numeros(archivo_entrada);
+	if(cant_num == -1){
+		fprintf(stderr, "Error: Archivo vacio. \n"); 
+		return 1;
+	}
     while(true){
-		if(leidos > cant_num){
-			fprintf(stderr, "Error: Archivo invalido. \n"); 
-			return 1;
-		}
-		status = fscanf(archivo_entrada,"%g",&cadena[leidos]);
-		fscanf (archivo_entrada, "%c" , &temp);
-		printf("caracter: (%c)",temp);
-		if(temp == '\n' && leidos != cant_num){
-			fprintf(stderr, "Error: Archivo invalido. \n"); 
-			return 1;
-		}
-		if((status == EOF && leidos != cant_num) || status == 0){
-			fprintf(stderr, "Error: Archivo invalido. \n"); 
-			return 1;	
-		}
+		//printf("leidos: %d  cant: %d\n",leidos,cant_num);
+		status = fscanf(archivo_entrada,"%g%c",&cadena[leidos],&temp);
+		//printf("LEER ACA\n");
+		//printf("numero: (%g)\n",cadena[leidos]); 
+		//printf("caracter: (%c)\n",temp);
+		//printf("status: (%d)\n",status);
 		leidos++;
-		printf("leidos: %d  status: %d\n",leidos,status);
+		if(status == 2 && temp == '\n' && leidos == cant_num){
+			printf("ENCONTRO TODA LA MATRIZ BIEN\n");
+			for(int i = 0; i < cant_num; i++) {
+				printf("%f\t",cadena[i]);
+			}
+			printf("\n");
+			leidos = 0;
+			cant_num = cantidad_numeros(archivo_entrada);
+			if(cant_num == -1){
+				printf("FIN\n");
+				return 0;
+			}
+			continue;
+		}
+		if(status != 2 && temp != '\n'){
+			fprintf(stderr, "Error: Caracter invalido. \n"); 
+			return 1;
+		}
+		if(temp == '\n'){
+			if(leidos == cant_num || leidos==0){
+				printf("todo bien\n");
+				return 0;
+			}
+			else{
+				fprintf(stderr, "Error: Archivo invalido. \n"); 
+				return 1;
+			}
+		}
+		if(leidos > cant_num){
+			fprintf(stderr, "Error: Mas numeros que los permitidos. \n"); 
+			return 1;
+		}
+		//printf("leidos: %d  status: %d\n",leidos,status);
 	}
-	
-	for(int i = 0; i < cant_num; i++) {
-		printf("%f\t",cadena[i]);
-	}
-	printf("\n");
-	printf("listo\n");
 
         // Separar double
         // matrix_t* matrixA = create_matrix(dimension,dimension);
