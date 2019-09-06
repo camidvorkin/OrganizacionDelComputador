@@ -9,18 +9,22 @@ static struct option long_options[] = {
     {"help",  no_argument, 0,  0 }
 };        
 
-/*
-void asign_values_matrix(int n, int start, char linea[]) {
+
+void asign_values_to_matrix(matrix_t* matrix, double values[], int n) {
 	int i = 0;
-	int j = 0;
-	int last_number = start;
-	for (; i < n; i++) {
- 		for (; j < n; j++) {
-			matrix.array[i][j] = linea[(i+j) * 2 + inicio];
-		}       
+	int final_n = n*n;
+	for (; i < final_n; i++) {
+		matrix->array[i] = values[i];      
 	}
 }
-*/
+
+void print_array(double* arr, int n) {
+	int i = 0;
+	for (; i < n; i++) {
+ 		printf("%f ", arr[i]);
+	}
+	printf("\n");
+}
 
 char * generate_values_format(int n) {
 
@@ -38,11 +42,15 @@ char * generate_values_format(int n) {
 	return format;
 }
 
-int main(int argc, char * argv []){
+
+void xxx(FILE* input_file, FILE* output_file) {
 	
-    int opt;
-    FILE* archivo_entrada = stdin;
-    FILE* archivo_salida = stdout;
+}
+
+
+int verify_argv(int argc, char * argv []) {
+
+	int opt;
 
     while ((opt = getopt_long(argc, argv, "Vha:i:o:", long_options, 0)) != -1) { 
 
@@ -57,90 +65,138 @@ int main(int argc, char * argv []){
             
             case '0':
                 abort();
-
     	}
     }
     
-    if(argc != 3){
+    if (argc != 3) {
         fprintf(stderr, "%s\n", "Error: Cantidad de parametros erronea");
 	    return 1;
     }
-	
-    /*
-    archivo_entrada = fopen(argv[1],"r");
-    archivo_salida = fopen(argv[2], "w"); 
-    if (!archivo_entrada || !archivo_salida){fprintf(stderr, "File not found \n"); return 1;}
-		
-    char * linea = NULL;
-    size_t cant = 0;
-    ssize_t leidos;
-    double dimension;
-    while ((leidos = getline (&linea, &cant, archivo_entrada) > 0)){
-        fscanf(archivo_entrada, "%le", &dimension);
-	linea[strlen(linea)-1] = '\0';
-        int dimension = atoi(linea[0]);
+
+    return 0;
+}
 
 
+int main(int argc, char * argv []) {
 
-        // Separar double
-        matrix_t* matrixA = create_matrix(dimension, dimension);
-        matrix_t* matrixB = create_matrix(dimension, dimension);
-
-
-	
-
-	int i = 0;
-	int j = 0;
-	for (; i < dimension; i++) {
-		for (; j < dimension; j++) {
-			matrix.array[i][j] = linea[(i+j) * 2 + 2];
-		}
-	}
-
-        // Crear matriz B
-        // Multiplicar matrices
-        // Imprimir en archivo salida/archivo error
-
+    int rr;
+    if ((rr = verify_argv(argc, argv)) != 0) {
+    	return rr;
     }
-    */
-
-    FILE *input_file = fopen(argv[1], "r");
-
-    int len_matrix;
-    int i, r, amount_of_floats;
-    float *matrix_values;
-    fscanf(input_file, "%d", &len_matrix);
-    amount_of_floats = len_matrix * len_matrix * 2;
-    printf("aof: %d\n", amount_of_floats);
-    matrix_values = malloc(sizeof(float) * amount_of_floats);  
-    char *format = generate_values_format(2);
-    puts(format);
-    fscanf(input_file, "%g %g", matrix_values);
-    printf("exito\n");
-
-    char * x;
-    i = 0;
-    // "%[^\n]\n"
-    for (; i < amount_of_floats; i++) {
 	
-	    /*
-	 r = fscanf(input_file, "%g %[^\n] \n", &matrix_values[i], (char *) x);
-	 if (r != 1) {
-		 printf("!!!! error\n");
-	 }
-	 r = fscanf(input_file, "\n");
-	 printf("%d\n", r);
-	 */
-    }
-
-
-    i = 0;
-    for (; i < amount_of_floats; i++) {
-	    printf("%f\n", matrix_values[i]);
-    }
-   
+    FILE* input_file = fopen(argv[1],"r");
+    FILE* output_file = fopen(argv[2], "w"); 
     
-    fclose(archivo_entrada);
-    fclose(archivo_salida); 
+    if (!input_file || !output_file) {
+    	fprintf(stderr, "File not found \n"); 
+    	return 1;
+    }
+		
+    int len_matrix;
+    int c;
+    int r;
+
+    int line_no = 0;
+    while (true) {
+    	line_no += 1;
+	    r = fscanf(input_file, "%d", &len_matrix);
+
+	    if (r != 1) {
+	    	printf("%s | line_no %d\n", "ERROR: No pattern found for len_matrix", line_no);
+	    	break;
+	    }
+
+	    int amount_of_values = len_matrix * len_matrix * 2; 
+	    double* matrix_values = malloc(sizeof(double) * amount_of_values);
+
+	    int i = 0;
+	    while (true) {
+	    	// probar pasarlo abajo
+	    	r = fscanf(input_file, "%lg", &matrix_values[i]);
+
+	    	if (r != 1) {
+	    		printf("%s | line_no %d\n", "ERROR: No pattern found for double", line_no);
+	    		break;
+	    	}
+
+	    	// !!!! printf("fscaneado: %f\n", matrix_values[i]);
+
+	    	while ((c = getc(input_file))) {
+	    		// !!!! printf("%d - %c\n", c, c);
+	    		if (c == ' ' || c == '\t') {
+	    			continue;
+	    		} else if (c >= 48 && c <= 57) {
+	    			ungetc(c, input_file);
+	    			i++;
+	    			break;
+	    		} else if (c == '\n' || c == -1) {
+	    			break;
+	    		} else {
+	    			printf("%s | %c | line_no %d\n", "ERROR: Not a Number ;)", c, line_no);
+	    			// printf("%s: %c\n", "ERROR not read all walala", c);
+	    			break;
+	    		}
+	    	}
+
+	    	if (c == '\n' || c == -1) {
+	    		break;
+	    	}
+	    }
+
+	    // There are no more numbers after the required ones.
+	    if (amount_of_values != i+1) {
+	    	printf("%s | %d vs %d | line_no %d\n", "ERROR: mismatched amount of values", amount_of_values, i, line_no);
+	    }
+
+    	matrix_t* matrix_a = create_matrix(len_matrix, len_matrix);
+    	asign_values_to_matrix(matrix_a, matrix_values, len_matrix);
+
+    	matrix_t* matrix_b = create_matrix(len_matrix, len_matrix);
+    	asign_values_to_matrix(matrix_b, matrix_values+ (amount_of_values/2), len_matrix);
+
+    	// !!!! cambiar a out
+    	print_matrix(stdout, matrix_a);
+		print_matrix(stdout, matrix_b);
+
+/*
+
+		
+	    if (c == '\n') {
+	    	print_array(matrix_values, amount_of_values);
+	    	continue;
+	    }
+
+
+
+	    while ((c = getc(input_file))) {
+	    	if (c == ' ' || c == '\t') {
+	    		continue;
+	    	} else if (c == '\n' || c == -1) {
+	    		break;
+	    	} else {
+	    		printf("%s | %d - %c | line_no %d\n", "ERROR: Found non good character after parsing correctly", c, c, line_no);
+	    		break;
+	    	}
+	    }
+*/
+    	print_array(matrix_values, amount_of_values);
+
+	    if (c == -1) {
+	    	break;
+	    }
+
+
+
+
+    }
+
+
+    printf("%s\n", "ENDED NICELY");
+
+
+
+
+    fclose(input_file);
+    fclose(output_file); 
     return 0;
 }

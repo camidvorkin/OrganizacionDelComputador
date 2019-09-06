@@ -6,6 +6,12 @@
 #include <stdlib.h>
 #include <stdbool.h>
 
+struct matrix {
+    size_t rows;
+    size_t cols;
+    double* array;
+};
+
 typedef struct matrix matrix_t;
 
 // Constructor de matrix_t
