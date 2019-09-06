@@ -32,21 +32,6 @@ void print_array(double* arr, int n) {
 	printf("\n");
 }
 
-char * generate_values_format(int n) {
-
-	int len_format = n * 3 + 1;
-
-	char *format = malloc(sizeof(char) * len_format);
-	int i = 0;
-	for (; i < n; i++) {
-		format[i*3] = '%';
-		format[i*3+1] = 'g';
-		format[i*3+2] = ' ';
-	}
-	format[len_format - 1] = '\0';
-
-	return format;
-}
 
 int yyy(FILE* input_file, double* values, int* p_c, int line_no) {
 
@@ -79,7 +64,6 @@ int yyy(FILE* input_file, double* values, int* p_c, int line_no) {
 	    		break;
 	    	} else {
 	    		printf("%s | %c | line_no %d\n", "ERROR: Not a Number ;)", *p_c, line_no);
-	    		// printf("%s: %c\n", "ERROR not read all walala", c);
 	    		return -1;
 	    	}
 	    }
@@ -136,24 +120,6 @@ int xxx(FILE* input_file, FILE* output_file) {
     int line_no = 0;
     while (true) {
     	line_no += 1;
-    	/*
-	    r = fscanf(input_file, "%d", &len_matrix);
-
-	    if (r != 1) {
-	    	printf("%s | line_no %d\n", "ERROR: No pattern found for len_matrix", line_no);
-	    	break;
-	    }
-
-	    int amount_of_values = len_matrix * len_matrix * 2; 
-	    double* matrix_values = malloc(sizeof(double) * amount_of_values);
-
-	    int amount_of_values_read = yyy(input_file, matrix_values, &c, line_no);
-	    
-	    // There are no more numbers after the required ones.
-	    if (amount_of_values != amount_of_values_read) {
-	    	printf("%s | %d vs %d | line_no %d\n", "ERROR: mismatched amount of values", amount_of_values, amount_of_values_read, line_no);
-	    }
-	    */
 
 	    read_line_t* read_line = zzz(input_file, &c, line_no);
 	    if (!read_line) {
@@ -171,8 +137,8 @@ int xxx(FILE* input_file, FILE* output_file) {
     	// !!!! cambiar a out
     	print_matrix(stdout, matrix_a);
 		print_matrix(stdout, matrix_b);
+		print_matrix(stdout, matrix_multiply(matrix_a, matrix_b));
 
-		printf("%d %c\n", c, c);
 	    if (c == -1) {
 	    	break;
 	    }
@@ -231,7 +197,7 @@ int main(int argc, char * argv []) {
     	exit(1);
     }
 		
-    printf("%s\n", "ENDED NICELY");
+    // !!!! printf("%s\n", "ENDED NICELY");
 
     fclose(input_file);
     fclose(output_file); 

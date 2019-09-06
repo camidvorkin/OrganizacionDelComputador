@@ -32,7 +32,6 @@ void destroy_matrix(matrix_t* m){
 
 int print_matrix(FILE* fp, matrix_t* m){
 
-
     int i = 0 ;
     int n = m->rows * m->cols;
     int copy;
@@ -53,10 +52,25 @@ int print_matrix(FILE* fp, matrix_t* m){
 
 matrix_t* matrix_multiply(matrix_t* m1, matrix_t* m2){
 
-    matrix_t* matrix_resultante = create_matrix(m1->rows, m1->cols);
-    if(!matrix_resultante) return NULL;
+    matrix_t* result = create_matrix(m1->rows, m2->cols);
+    if (!result)return NULL;
+    int n = result->rows * result->cols;
+    int i = 0;
+    for ( ; i < m1->rows ; i++ ) {
+        int j = 0;
+        for ( ; j < m2->cols; j++) {
+            int k = 0;
+            double acc = 0;
+            for ( ; k < m1->cols; k++) {
+                int p1 = i*m1->cols+k;
+                int p2 = k*m1->cols+j;
+                acc += m1->array[p1] * m2->array[p2]; 
+            }
+            result->array[i*result->cols + j] = acc;
+        }
+    }
 
-    return matrix_resultante;
+    return result;
 }
 
 
