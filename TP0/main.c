@@ -1,13 +1,11 @@
 #define _POSIX_C_SOURCE 200809L
-#include <getopt.h>
 #include "matrix.h"
+
+#define OPT_HELP "-h"
+#define OPT_VERSION "-V"
 
 const char HELP[] = "Usage:\n \ttp0 -h \n\ttp0 -V\n\ttp0 < in_input_file > out_input_file\n\nOptions:\n\t-V, --version Print version and quit.\n\t-h, --help Print this information and quit.\nExamples:\n\ttp0 < in.txt > out.txt\n\tcat in.txt | tp0 > out.txt" ;
 const char VERSION[] = "XXXXXXXXXXXXXXXXXXXXXXXx\n"; // Buscar version
-static struct option long_options[] = {
-    {"version",  no_argument, 0,  0 }, 
-    {"help",  no_argument, 0,  0 }
-};        
 
 
 struct read_line {
@@ -145,28 +143,18 @@ int parse_and_multiply_matrixes(FILE* input_file, FILE* output_file) {
 
 
 int verify_argv(int argc, char * argv []) {
-
-	int opt;
-
-    while ((opt = getopt_long(argc, argv, "Vha:i:o:", long_options, 0)) != -1) { 
-
-    	switch (opt) {
-    		case 'h':
-    			fprintf(stdout, HELP);
-    			return 0;
-
-    		case 'V':
-    			fprintf(stdout, VERSION);
-    			return 0;
-            
-            case '0':
-                abort();
-    	}
-    }
+	
+	if (!strcmp(argv[1], OPT_HELP)) {
+		fprintf(stdout, HELP);
+    	return 1;
+	} else if (!strcmp(argv[1], OPT_HELP)) {
+		fprintf(stdout, OPT_VERSION);
+    	return 1;
+	}
     
     if (argc != 3) {
         fprintf(stderr, "%s\n", "Error: Cantidad de parametros erronea");
-	    return 1;
+	    return -1;
     }
 
     return 0;
@@ -178,6 +166,8 @@ int main(int argc, char * argv []) {
     int r;
     if ((r = verify_argv(argc, argv)) != 0) {
     	return r;
+    } else if (r < 0) {
+    	return -r;
     }
 	
     FILE* input_file = fopen(argv[1],"r");
