@@ -111,7 +111,7 @@ read_line_t* zzz(FILE* input_file, int* p_c, int line_no) {
 	return read_line;
 }
 
-int xxx(FILE* input_file, FILE* output_file) {
+int parse_and_multiply_matrixes(FILE* input_file, FILE* output_file) {
 
 	int len_matrix;
     int c;
@@ -135,9 +135,9 @@ int xxx(FILE* input_file, FILE* output_file) {
     	asign_values_to_matrix(matrix_b, read_line->matrix_b_values, len_matrix);
 
     	// !!!! cambiar a out
-    	print_matrix(stdout, matrix_a);
-		print_matrix(stdout, matrix_b);
-		print_matrix(stdout, matrix_multiply(matrix_a, matrix_b));
+    	print_matrix(output_file, matrix_a);
+		print_matrix(output_file, matrix_b);
+		print_matrix(output_file, matrix_multiply(matrix_a, matrix_b));
 
 	    if (c == -1) {
 	    	break;
@@ -192,7 +192,7 @@ int main(int argc, char * argv []) {
     	return 1;
     }
 
-    r = xxx(input_file, output_file);
+    r = parse_and_multiply_matrixes(input_file, output_file);
     if (r < 0) {
     	exit(1);
     }
