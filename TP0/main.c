@@ -33,7 +33,7 @@ void print_array(double* arr, int n) {
 }
 
 
-int yyy(FILE* input_file, double* values, int* p_c, int line_no) {
+int obtain_matrixes_values(FILE* input_file, double* values, int* p_c, int line_no) {
 
 	int r, i, len_matrix;
 
@@ -76,7 +76,7 @@ int yyy(FILE* input_file, double* values, int* p_c, int line_no) {
 	return i+1;
 }
 
-read_line_t* zzz(FILE* input_file, int* p_c, int line_no) {
+read_line_t* parse_line(FILE* input_file, int* p_c, int line_no) {
 
 	int r, len_matrix;
 
@@ -90,7 +90,7 @@ read_line_t* zzz(FILE* input_file, int* p_c, int line_no) {
 	int amount_of_values = len_matrix * len_matrix * 2; 
 	double* matrix_values = malloc(sizeof(double) * amount_of_values);
 
-	int amount_of_values_read = yyy(input_file, matrix_values, p_c, line_no);
+	int amount_of_values_read = obtain_matrixes_values(input_file, matrix_values, p_c, line_no);
 	if (amount_of_values < 0) {
 		return NULL;
 	}
@@ -121,7 +121,7 @@ int parse_and_multiply_matrixes(FILE* input_file, FILE* output_file) {
     while (true) {
     	line_no += 1;
 
-	    read_line_t* read_line = zzz(input_file, &c, line_no);
+	    read_line_t* read_line = parse_line(input_file, &c, line_no);
 	    if (!read_line) {
 	    	return -1;
 	    }
@@ -200,6 +200,6 @@ int main(int argc, char * argv []) {
     // !!!! printf("%s\n", "ENDED NICELY");
 
     fclose(input_file);
-    fclose(output_file); 
+    fclose(output_file);
     return 0;
 }
