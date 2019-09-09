@@ -11,21 +11,21 @@ static struct option long_options[] = {
 
 
 struct read_line {
-	int len_matrix;
+	size_t len_matrix;
 	double *matrix_a_values;
 	double *matrix_b_values;
 } typedef read_line_t;
 
-void asign_values_to_matrix(matrix_t* matrix, double values[], int n) {
-	int i = 0;
-	int final_n = n*n;
+void asign_values_to_matrix(matrix_t* matrix, double values[], size_t n) {
+	size_t i = 0;
+	size_t final_n = n*n;
 	for (; i < final_n; i++) {
 		matrix->array[i] = values[i];      
 	}
 }
 
 void print_array(double* arr, int n) {
-	int i = 0;
+	size_t i = 0;
 	for (; i < n; i++) {
  		printf("%f ", arr[i]);
 	}
@@ -33,9 +33,10 @@ void print_array(double* arr, int n) {
 }
 
 
-int obtain_matrixes_values(FILE* input_file, double* values, int* p_c, int line_no) {
+size_t obtain_matrixes_values(FILE* input_file, double* values, int* p_c, int line_no) {
 
-	int r, i;
+	int r;
+	size_t i;
 
 	i = 0;
 	while (true) {
@@ -74,26 +75,27 @@ int obtain_matrixes_values(FILE* input_file, double* values, int* p_c, int line_
 
 read_line_t* parse_line(FILE* input_file, int* p_c, int line_no) {
 
-	int r, len_matrix;
+	int r;
+	size_t len_matrix;
 
-	r = fscanf(input_file, "%d", &len_matrix);
+	r = fscanf(input_file, "%ld", &len_matrix);
 
 	if (r != 1) {
 	   	printf("%s | line_no %d\n", "ERROR: No pattern found for len_matrix", line_no);
 	   	return NULL;
  	}
 
-	int amount_of_values = len_matrix * len_matrix * 2; 
+	size_t amount_of_values = len_matrix * len_matrix * 2; 
 	double* matrix_values = malloc(sizeof(double) * amount_of_values);
 
-	int amount_of_values_read = obtain_matrixes_values(input_file, matrix_values, p_c, line_no);
+	size_t amount_of_values_read = obtain_matrixes_values(input_file, matrix_values, p_c, line_no);
 	if (amount_of_values < 0) {
 		return NULL;
 	}
 	    
 	// There are no more numbers after the required ones.
 	if (amount_of_values != amount_of_values_read) {
-	   	printf("%s | %d vs %d | line_no %d\n", "ERROR: mismatched amount of values", amount_of_values, amount_of_values_read, line_no);
+	   	printf("%s | %ld vs %ld | line_no %d\n", "ERROR: mismatched amount of values", amount_of_values, amount_of_values_read, line_no);
 	   	return NULL;
 	}
 
@@ -120,7 +122,7 @@ int parse_and_multiply_matrixes(FILE* input_file, FILE* output_file) {
 	    	return -1;
 	    }
 
-	    int len_matrix = read_line->len_matrix;
+	    size_t len_matrix = read_line->len_matrix;
 
     	matrix_t* matrix_a = create_matrix(len_matrix, len_matrix);
     	asign_values_to_matrix(matrix_a, read_line->matrix_a_values, len_matrix);
