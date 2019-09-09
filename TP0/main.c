@@ -35,7 +35,7 @@ void print_array(double* arr, int n) {
 
 int obtain_matrixes_values(FILE* input_file, double* values, int* p_c, int line_no) {
 
-	int r, i, len_matrix;
+	int r, i;
 
 	i = 0;
 	while (true) {
@@ -46,10 +46,6 @@ int obtain_matrixes_values(FILE* input_file, double* values, int* p_c, int line_
 	    	printf("%s | line_no %d\n", "ERROR: No pattern found for double", line_no);
 	    	return -1;
 	    }
-
-		int amount_of_values = len_matrix * len_matrix * 2; 
-	    double* matrix_values = malloc(sizeof(double) * amount_of_values);
-
 
 	    // !!!! printf("fscaneado: %f\n", matrix_values[i]);
 	    while ((*p_c = getc(input_file))) {
@@ -113,9 +109,7 @@ read_line_t* parse_line(FILE* input_file, int* p_c, int line_no) {
 
 int parse_and_multiply_matrixes(FILE* input_file, FILE* output_file) {
 
-	int len_matrix;
     int c;
-    int r;
 
     int line_no = 0;
     while (true) {

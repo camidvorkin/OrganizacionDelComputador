@@ -13,7 +13,7 @@ matrix_t* create_matrix(size_t rows, size_t cols){
     matrix->rows = rows;
     matrix->cols = cols;
  
-    int n = rows*cols;
+    size_t n = rows*cols;
     matrix->array = malloc(sizeof(double)* n);
     if (!matrix->array) {
         free(matrix);
@@ -32,11 +32,11 @@ void destroy_matrix(matrix_t* m){
 
 int print_matrix(FILE* fp, matrix_t* m){
 
-    int i = 0 ;
-    int n = m->rows * m->cols;
+    size_t i = 0;
+    size_t n = m->rows * m->cols;
     int copy;
 
-    copy = fprintf(fp, "%d", n);
+    copy = fprintf(fp, "%ld", n);
     check_fprint(fp, copy);
 
     for (; i < n ; i++) {
@@ -54,16 +54,16 @@ matrix_t* matrix_multiply(matrix_t* m1, matrix_t* m2){
 
     matrix_t* result = create_matrix(m1->rows, m2->cols);
     if (!result)return NULL;
-    int n = result->rows * result->cols;
-    int i = 0;
+
+    size_t i = 0;
     for ( ; i < m1->rows ; i++ ) {
-        int j = 0;
+        size_t j = 0;
         for ( ; j < m2->cols; j++) {
-            int k = 0;
+            size_t k = 0;
             double acc = 0;
             for ( ; k < m1->cols; k++) {
-                int p1 = i*m1->cols+k;
-                int p2 = k*m1->cols+j;
+                size_t p1 = i*m1->cols+k;
+                size_t p2 = k*m1->cols+j;
                 acc += m1->array[p1] * m2->array[p2]; 
             }
             result->array[i*result->cols + j] = acc;
