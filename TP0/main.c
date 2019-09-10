@@ -4,7 +4,7 @@
 #define OPT_HELP "-h"
 #define OPT_VERSION "-V"
 
-const char HELP[] = "Usage:\n \ttp0 -h \n\ttp0 -V\n\ttp0 < in_input_file > out_input_file\n\nOptions:\n\t-V, --version Print version and quit.\n\t-h, --help Print this information and quit.\nExamples:\n\ttp0 < in.txt > out.txt\n\tcat in.txt | tp0 > out.txt\n" ;
+const char HELP[] = "Usage:\n \tTP0 -h \n\tTP0 -V\n\tTP0 < in_input_file > out_input_file\n\nOptions:\n\t-V, --version Print version and quit.\n\t-h, --help Print this information and quit.\nExamples:\n\tTP0 < in.txt > out.txt\n\tcat in.txt | TP0 > out.txt\n" ;
 const char VERSION[] = "First version\n";
 
 

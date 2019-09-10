@@ -29,5 +29,13 @@ $(EXEC1): $(OBJ) main.c
 clean:
 	rm *.o $(EXEC1)
 
+test-successful: $(EXEC1)
+	./$(EXEC1) ejemplo-vario.txt out
+	less out
+
+test-failure: $(EXEC1)
+	./$(EXEC1) ejemplo-fallos.txt out
+	less out
+
 #Make compila unicamente los elementos que se hayan modificado recientemente
 	
