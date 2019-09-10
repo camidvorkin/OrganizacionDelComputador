@@ -4,8 +4,8 @@
 #define OPT_HELP "-h"
 #define OPT_VERSION "-V"
 
-const char HELP[] = "Usage:\n \ttp0 -h \n\ttp0 -V\n\ttp0 < in_input_file > out_input_file\n\nOptions:\n\t-V, --version Print version and quit.\n\t-h, --help Print this information and quit.\nExamples:\n\ttp0 < in.txt > out.txt\n\tcat in.txt | tp0 > out.txt" ;
-const char VERSION[] = "XXXXXXXXXXXXXXXXXXXXXXXx\n"; // Buscar version
+const char HELP[] = "Usage:\n \ttp0 -h \n\ttp0 -V\n\ttp0 < in_input_file > out_input_file\n\nOptions:\n\t-V, --version Print version and quit.\n\t-h, --help Print this information and quit.\nExamples:\n\ttp0 < in.txt > out.txt\n\tcat in.txt | tp0 > out.txt\n" ;
+const char VERSION[] = "First version\n";
 
 
 struct read_line {
@@ -38,7 +38,6 @@ size_t obtain_matrixes_values(FILE* input_file, double* values, int* p_c, int li
 
 	i = 0;
 	while (true) {
-	    // probar pasarlo abajo
 	    r = fscanf(input_file, "%lg", &values[i]);
 
 	    if (r != 1) {
@@ -46,9 +45,7 @@ size_t obtain_matrixes_values(FILE* input_file, double* values, int* p_c, int li
 	    	return -1;
 	    }
 
-	    // !!!! printf("fscaneado: %f\n", matrix_values[i]);
 	    while ((*p_c = getc(input_file))) {
-	    	// !!!! printf("%d - %c\n", c, c);
 	    	if (*p_c == ' ' || *p_c == '\t') {
 	    		continue;
 	    	} else if (*p_c >= 48 && *p_c <= 57) {
@@ -128,9 +125,6 @@ int parse_and_multiply_matrixes(FILE* input_file, FILE* output_file) {
     	matrix_t* matrix_b = create_matrix(len_matrix, len_matrix);
     	asign_values_to_matrix(matrix_b, read_line->matrix_b_values, len_matrix);
 
-    	// !!!! cambiar a out
-    	print_matrix(output_file, matrix_a);
-		print_matrix(output_file, matrix_b);
 		print_matrix(output_file, matrix_multiply(matrix_a, matrix_b));
 
 	    if (c == -1) {
@@ -147,16 +141,14 @@ int verify_argv(int argc, char * argv []) {
 	if (!strcmp(argv[1], OPT_HELP)) {
 		fprintf(stdout, HELP);
     	return 1;
-	} else if (!strcmp(argv[1], OPT_HELP)) {
-		fprintf(stdout, OPT_VERSION);
+	} else if (!strcmp(argv[1], OPT_VERSION)) {
+		fprintf(stdout, VERSION);
     	return 1;
 	}
-    
-    if (argc != 3) {
+	if (argc != 3) {
         fprintf(stderr, "%s\n", "Error: Cantidad de parametros erronea");
 	    return -1;
     }
-
     return 0;
 }
 
@@ -182,8 +174,6 @@ int main(int argc, char * argv []) {
     if (r < 0) {
     	exit(1);
     }
-		
-    // !!!! printf("%s\n", "ENDED NICELY");
 
     fclose(input_file);
     fclose(output_file);
