@@ -36,7 +36,7 @@ int print_matrix(FILE* fp, matrix_t* m){
     size_t n = m->rows * m->cols;
     int copy;
 
-    copy = fprintf(fp, "%ld", n);
+    copy = fprintf(fp, "%d", n);
     check_fprint(fp, copy);
 
     for (; i < n ; i++) {
