@@ -73,7 +73,7 @@ read_line_t* parse_line(FILE* input_file, int* p_c, int line_no) {
 	int r;
 	size_t len_matrix;
 
-	r = fscanf(input_file, "%ul", &len_matrix);
+	r = fscanf(input_file, "%lu", &len_matrix);
 
 	if (r != 1) {
 	   	printf("%s | line_no %d\n", "ERROR: No pattern found for len_matrix", line_no);
@@ -90,7 +90,7 @@ read_line_t* parse_line(FILE* input_file, int* p_c, int line_no) {
 	    
 	// There are no more numbers after the required ones.
 	if (amount_of_values != amount_of_values_read) {
-	   	printf("%s | %ul vs %ul | line_no %d\n", "ERROR: mismatched amount of values", amount_of_values, amount_of_values_read, line_no);
+	   	printf("%s | %lu vs %lu | line_no %d\n", "ERROR: mismatched amount of values", amount_of_values, amount_of_values_read, line_no);
 	   	return NULL;
 	}
 

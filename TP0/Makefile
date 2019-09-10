@@ -2,7 +2,8 @@
 EXEC1 = TP0 
 CC = gcc
 OBJ = matrix.o
-CFLAGS = -g -std=c99 -Wall -Wconversion -Wno-sign-conversion 
+CFLAGS = 
+#CFLAGS += -g -std=c99 -Wall -Wconversion -Wno-sign-conversion 
 #CFLAGS += -Wshadow -Wpointer-arith -Wunreachable-code
 #CFLAGS += -Wbad-function-cast -Werror -pedantic
 
