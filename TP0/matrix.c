@@ -5,7 +5,7 @@
 void check_fprint(FILE* fp, int copy);
 
 
-matrix_t* create_matrix(size_t rows, size_t cols){
+matrix_t* create_matrix(size_t rows, size_t cols) {
     
     matrix_t* matrix = malloc(sizeof(matrix_t));
     if (!matrix) return NULL;
@@ -24,13 +24,13 @@ matrix_t* create_matrix(size_t rows, size_t cols){
 }
 
 
-void destroy_matrix(matrix_t* m){
+void destroy_matrix(matrix_t* m) {
     free(m->array);
     free(m);
 }
 
 
-int print_matrix(FILE* fp, matrix_t* m){
+int print_matrix(FILE* fp, matrix_t* m) {
 
     size_t i = 0;
     size_t n = m->rows * m->cols;
@@ -50,10 +50,10 @@ int print_matrix(FILE* fp, matrix_t* m){
     return 0;
 }
 
-matrix_t* matrix_multiply(matrix_t* m1, matrix_t* m2){
+matrix_t* matrix_multiply(matrix_t* m1, matrix_t* m2) {
 
     matrix_t* result = create_matrix(m1->rows, m2->cols);
-    if (!result)return NULL;
+    if (!result) return NULL;
 
     size_t i = 0;
     for ( ; i < m1->rows ; i++ ) {
@@ -76,7 +76,7 @@ matrix_t* matrix_multiply(matrix_t* m1, matrix_t* m2){
 
 void check_fprint(FILE* fp, int copy) {
     fflush(fp);
-    if (copy < 0){
+    if (copy < 0) {
         fprintf(stderr,"Error en la copia del archivo resultante\n");
         exit(EXIT_FAILURE);
     }

@@ -14,6 +14,7 @@ struct read_line {
 	double *matrix_b_values;
 } typedef read_line_t;
 
+
 void asign_values_to_matrix(matrix_t* matrix, double values[], size_t n) {
 	size_t i = 0;
 	size_t final_n = n*n;
@@ -22,12 +23,20 @@ void asign_values_to_matrix(matrix_t* matrix, double values[], size_t n) {
 	}
 }
 
-void print_array(double* arr, int n) {
-	size_t i = 0;
-	for (; i < n; i++) {
- 		printf("%f ", arr[i]);
-	}
-	printf("\n");
+read_line_t* read_line_create(size_t len_matrix, double* matrixes_values) {
+	read_line_t* read_line = malloc(sizeof(read_line_t));
+	if (!read_line) return NULL;
+
+	read_line->len_matrix = len_matrix;
+	read_line->matrix_a_values = matrixes_values;
+	read_line->matrix_b_values = matrixes_values + (len_matrix*len_matrix);
+
+	return read_line;
+}
+
+void read_line_free(read_line_t* read_line) {
+	free(read_line->matrix_a_values);
+	free(read_line);
 }
 
 
@@ -81,9 +90,9 @@ read_line_t* parse_line(FILE* input_file, int* p_c, int line_no) {
  	}
 
 	size_t amount_of_values = len_matrix * len_matrix * 2; 
-	double* matrix_values = malloc(sizeof(double) * amount_of_values);
+	double* matrixes_values = malloc(sizeof(double) * amount_of_values);
 
-	size_t amount_of_values_read = obtain_matrixes_values(input_file, matrix_values, p_c, line_no);
+	size_t amount_of_values_read = obtain_matrixes_values(input_file, matrixes_values, p_c, line_no);
 	if (amount_of_values < 0) {
 		return NULL;
 	}
@@ -94,12 +103,8 @@ read_line_t* parse_line(FILE* input_file, int* p_c, int line_no) {
 	   	return NULL;
 	}
 
-	read_line_t* read_line = malloc(sizeof(read_line_t));
+	read_line_t* read_line = read_line_create(len_matrix, matrixes_values);
 	if (!read_line) return NULL;
-
-	read_line->len_matrix = len_matrix;
-	read_line->matrix_a_values = matrix_values;
-	read_line->matrix_b_values = matrix_values + (len_matrix*len_matrix);
 
 	return read_line;
 }
@@ -120,13 +125,35 @@ int parse_and_multiply_matrixes(FILE* input_file, FILE* output_file) {
 	    size_t len_matrix = read_line->len_matrix;
 
     	matrix_t* matrix_a = create_matrix(len_matrix, len_matrix);
+    	if (!matrix_a) {
+    		read_line_free(read_line);
+    		return -2;
+    	}
     	asign_values_to_matrix(matrix_a, read_line->matrix_a_values, len_matrix);
 
     	matrix_t* matrix_b = create_matrix(len_matrix, len_matrix);
+    	if (!matrix_b) {
+    		read_line_free(read_line);
+    		free(matrix_a);
+    		return -2;
+    	}
     	asign_values_to_matrix(matrix_b, read_line->matrix_b_values, len_matrix);
 
-		print_matrix(output_file, matrix_multiply(matrix_a, matrix_b));
+    	matrix_t* matrix_c = matrix_multiply(matrix_a, matrix_b);
+    	if (!matrix_c) {
+    		read_line_free(read_line);
+    		free(matrix_a);
+    		free(matrix_b);
+    		return -2;
+    	}
+		print_matrix(output_file, matrix_c);
 
+		read_line_free(read_line);
+		destroy_matrix(matrix_a);
+    	destroy_matrix(matrix_b);
+    	destroy_matrix(matrix_c);
+    		
+    	// Stop when EOF reached.
 	    if (c == -1) {
 	    	break;
 	    }
@@ -163,16 +190,21 @@ int main(int argc, char * argv []) {
     }
 	
     FILE* input_file = fopen(argv[1],"r");
+    if (!input_file) {
+    	fprintf(stderr, "File not found: %s\n", argv[1]); 
+    	return 1;
+    }
+
     FILE* output_file = fopen(argv[2], "w"); 
-    
-    if (!input_file || !output_file) {
-    	fprintf(stderr, "File not found \n"); 
+    if (!output_file) {
+    	fclose(output_file);
+    	fprintf(stderr, "File not found: %s\n", argv[2]); 
     	return 1;
     }
 
     r = parse_and_multiply_matrixes(input_file, output_file);
     if (r < 0) {
-    	exit(1);
+    	exit(-r);
     }
 
     fclose(input_file);
