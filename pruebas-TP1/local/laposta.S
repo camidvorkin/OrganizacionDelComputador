@@ -29,45 +29,80 @@ matrix_multiply:
 	# now null !!!!
 	
 	# Initialize registers
-	lw t10, 8(a0) # t10 = m1->array
+	# lw t10, 8(a0) # t10 = m1->array
+	# lw t11, 8(a1) # t11 = m2->array
+
+	# lw t3, 0(a0) # t3 = m1->rows
+	# lw t4, 4(a0) # t4 = m1->cols
+	# lw t5, 4(a1) # t5 = m2->cols
 
 
-	li t0, 0 # i = 0
+	li t0, 0 				 # i = 0
 loop_i:
-	beq t0, t5, xxx # if (i == m1->rows)
-	addiu t0, t0, 1
-	li t1, 0 # j = 0
+	beq t0, t3, after_loop_i # if (i == m1->rows)
+	li t1, 0 				 # j = 0
 	j loop_j
 	
 loop_j:
-	beq t1, t6, yyy # if (j == m2->cols)
-	addiu t1, t1, 1
+	beq t1, t5, after_loop_j # if (j == m2->cols)
 	li t2, 0 # k = 0
-	lf f0, 0 # acc = 0
+	l.d $f0, 0 # acc = 0
+
 	j loop_z
 
-loop_z
-	beq t2, t3, zzz 	# if (k == m1->cols)
+loop_z:
+	lw t4, 4(a0) 		# t3 = m1->cols
+	beq t2, t4, after_loop_k 	# if (k == m1->cols)
 	
+	lw t4, 4(a0) 		# t3 = m1->cols
 	mul t6, t0, t4
 	addu t6, t6, t2 	# p1 = i*m1->cols + k
-	addu t12, t10, t6	
-	l# t12: m1->array[p1]
-	
-	mul t7, t2, t4
-	addu t7, t7, t1 	# p1 = k*m1->cols + j
-	
+	sll t6, t6, 3		# Multiplying by 8 because of doubles
+
+	lw t4, 8(a0)		# t3 = m1->array
+	addu t4, t4, t6	
+	l.d $f2, 0(t4)		# f1: m1->array[p1]
 	
 
-	
-	
+	lw t4, 4(a0) 		# t3 = m1->cols
+	mul t6, t2, t4		#
+	addu t6, t6, t1 	# t6: p2
+	sll t6, t6, 3
 
-	
-	
+	lw t4, 8(a1)		# t3 = m2->array
+	addu t4, t4, t6
+	l.d $f4, 0(t4)		# f2: m2->array[p2]
+
+	mul.d $f2, $f4, $f2
+	add.d $f0, $f0, $f2	# acc += m1->array[p1] * m2->array[p2]
+
+	addiu t2, t2, 1
+	j loop_z
+
+
+after_loop_i:	
 	li	v0, 0
 	addu	v0, a0, a1
 	j	matrix_multiply_return
 
+after_loop_j:
+	addiu t0, t0, 1
+	j loop_i
+	
+after_loop_k:
+	lw t4, 4(v0) 		# t3 = result->cols
+	mul t6, t0, t4
+	add t6, t6, t1		# t6: i*result->cols + j
+	sll t6, t6, 3
+
+	lw t4, 8(v0)		# t7: result->array
+	add t7, t7, t6
+
+	s.d $f0, 0(t7)			# !!!! right order?
+
+	addiu t1, t1, 1
+	j loop_j
+	
 matrix_multiply_return:
 	# Destruimos el frame.
 	#
