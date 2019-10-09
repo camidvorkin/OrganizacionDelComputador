@@ -30,7 +30,7 @@ matrix_multiply:
 	# t3 = m1->rows = m2->rows = m1->cols = m2->cols = N
 	# t4 = m1->array
 	# t5 = m2->array
-	# t6 = pos
+	# t6 = aux
 	# f0 = accum
 	# f1 = resul
 
@@ -60,13 +60,18 @@ loop_j:
 loop_k:
 	beq t2, t3, loop_j 			# if (k == m1->cols)
 	addiu t2, t2, 1				# k = k + 1
-	mul t6, t0, t3				# pos = i * m1->cols
-	addu t6, t6, t2 			# pos = pos + k
-	l.d $f0, $t6(t4)             # accum = m1->array[pos]
+	mul t6, t0, t3				# aux = i * m1->cols
+	addu t6, t6, t2 			# aux = pos + k
+	sll t6, t6, 3				# aux = pos * 8 
+	addu t6, t6,t4              # aux = aux + m1->array
+	l.d $f0, 0(t6)                # accum = m1->array[aux]
 	
-	mul t6, t2, t3				# pos = k * m1->cols
-	addu t6, t6, t1 			# pos = pos = pos + k
-	l.d $f2, $t6(t5)            # resul = m2->array[pos]
+	mul t6, t2, t3				# aux = k * m1->cols
+	addu t6, t6, t1 			# aux = aux = aux + k
+	sll t6, t6, 3				# pos = pos * 8 
+	addu t6, t6,t5              # aux = aux + m1->array
+	l.d $f2, 0(t6)                # resul = m2->array[aux]
+	
 	mul.d $f2, $f2, $f0         # resul = resul * accum
 	j loop_k
 	
