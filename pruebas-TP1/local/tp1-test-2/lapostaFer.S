@@ -81,11 +81,10 @@ fin:
 matrix_multiply_return:
 	# Destruimos el frame.
 	#
+	lw ra, 32(sp)
 	lw	$fp, 28(sp)
 	addiu	sp, sp, 40
-
-	# Retorno.
-	#
+	# Retorno
 	j	ra
 	.end	matrix_multiply
 	
