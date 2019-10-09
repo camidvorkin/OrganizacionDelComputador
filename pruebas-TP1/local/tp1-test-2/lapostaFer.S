@@ -70,7 +70,7 @@ loop_k:
 	addu t6, t6, t1 			# aux = aux = aux + k
 	sll t6, t6, 3				# pos = pos * 8 
 	addu t6, t6,t5              # aux = aux + m1->array
-	l.d $f2, 0(t6)                # resul = m2->array[aux]
+	l.d $f2, 0(t6)              # resul = m2->array[aux]
 	
 	mul.d $f2, $f2, $f0         # resul = resul * accum
 	j loop_k
@@ -80,7 +80,7 @@ fin:
 
 matrix_multiply_return:
 	# Destruimos el frame.
-	#
+
 	lw ra, 32(sp)
 	lw	$fp, 28(sp)
 	addiu	sp, sp, 40
