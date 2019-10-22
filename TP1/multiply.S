@@ -24,12 +24,12 @@ matrix_multiply:
         # create_matrix
         lw a0, 0(a0)
         lw a1, 4(a1)
-        la t9, create_matrix
+        la t9, create
         jal t9
 
         lw t3, 0(v0)
 
-        # If create_matrix returns NULL, return NULL
+        # If create returns NULL, return NULL
         beqz v0, matrix_multiply_return
 
 	# Restore parameters
@@ -71,7 +71,7 @@ loop_k:
         add t4, t4, t6
         l.d $f6, 0(t4)          # f1: m1->array[p1]
 
-	 lw t4, 4(a0)            # t4 = m1->cols
+		lw t4, 4(a0)            # t4 = m1->cols
         mul t6, t2, t4          #
         addu t6, t6, t1         # t6: p2
         sll t6, t6, 3
@@ -100,8 +100,8 @@ after_loop_k:
         add t6, t6, t1          # t6: i*result->cols + j
         sll t6, t6, 3
 
-        lw t4, 8(v0)            # t7: result->array
-        add t4, t4, t6
+        lw t4, 8(v0)            # t4: result->array
+        add t4, t4, t6			# t4: result->array[i*result->cols + j]
 
         s.d $f0, 0(t4)
 

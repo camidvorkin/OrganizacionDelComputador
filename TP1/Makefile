@@ -3,7 +3,7 @@ EXEC1 = TP1
 CC = gcc
 OBJ = matrix-TP0.o
 OBJ-MIPS = matrix.o
-CFLAGS = 
+CFLAGS = -g -Wall
 #CFLAGS += -g -std=c99 -Wall -Wconversion -Wno-sign-conversion 
 #CFLAGS += -Wshadow -Wpointer-arith -Wunreachable-code
 #CFLAGS += -Wbad-function-cast -Werror -pedantic
@@ -29,7 +29,7 @@ $(EXEC1): $(OBJ) main.c
 #Todos los objetos definidos en "OBJ=" con dependencia a los archivos .c y .h van a compilarse de la misma manera
 
 mips: $(OBJ-MIPS) main.c
-	$(CC) $(CFLAGS) -o0 main.c matrix.c multiply.S -o $(EXEC1)
+	$(CC) $(CFLAGS) main.c matrix.c multiply.S create.S mymalloc.S -o $(EXEC1)
 
 
 #Borra todos los archivos .o del directorio

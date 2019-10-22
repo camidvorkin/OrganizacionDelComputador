@@ -29,6 +29,11 @@ void destroy_matrix(matrix_t* m) {
     free(m);
 }
 
+void destroy(matrix_t* m) {
+    free(m->array);
+    free(m);
+}
+
 
 int print_matrix(FILE* fp, matrix_t* m) {
 

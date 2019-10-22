@@ -1,5 +1,6 @@
 #include <errno.h>
 #include "matrix.h"
+#include "mymalloc.h"
 
 extern matrix_t* matrix_multiply(matrix_t* m1, matrix_t* m2);
 
@@ -28,6 +29,11 @@ matrix_t* create_matrix(size_t rows, size_t cols) {
 void destroy_matrix(matrix_t* m) {
     free(m->array);
     free(m);
+}
+
+void destroy(matrix_t* m) {
+    myfree(m->array);
+    myfree(m);
 }
 
 

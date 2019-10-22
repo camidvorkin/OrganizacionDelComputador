@@ -151,7 +151,7 @@ int parse_and_multiply_matrixes(FILE* input_file, FILE* output_file) {
 		read_line_free(read_line);
 		destroy_matrix(matrix_a);
     	destroy_matrix(matrix_b);
-    	destroy_matrix(matrix_c);
+    	destroy(matrix_c);
     		
     	// Stop when EOF reached.
 	    if (c == -1) {
