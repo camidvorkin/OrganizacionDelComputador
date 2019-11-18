@@ -1,5 +1,5 @@
 # Constantes globales para la compilacion
-EXEC1 = TP1 
+EXEC1 = tp1 
 CC = gcc
 OBJ = matrix-TP0.o
 OBJ-MIPS = matrix.o
@@ -37,23 +37,23 @@ clean:
 	rm *.o *.s $(EXEC1)
 
 test-successful: $(EXEC1)
-	./$(EXEC1) ejemplo-varios.txt out
+	./$(EXEC1) < ejemplo-varios.txt > out
 	less out
 
 test-failure: $(EXEC1)
-	./$(EXEC1) ejemplo-fallos.txt out
+	./$(EXEC1) < ejemplo-fallos.txt > out
 	less out
 
 test-successful-mips: $(mips)
-	./$(EXEC1) ejemplo-varios.txt out
+	./$(EXEC1) < ejemplo-varios.txt > out
 	less out
 
 test-failure-mips: $(mips)
-	./$(EXEC1) ejemplo-fallos.txt out
+	./$(EXEC1) < ejemplo-fallos.txt > out
 	less out
 
 valgrind: $(EXEC1)
-	valgrind ./$(EXEC1) ejemplo-varios.txt out
+	valgrind ./$(EXEC1) < ejemplo-varios.txt > out
 	less out
 
 #Make compila unicamente los elementos que se hayan modificado recientemente

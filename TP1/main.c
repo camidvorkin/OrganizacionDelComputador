@@ -85,7 +85,7 @@ read_line_t* parse_line(FILE* input_file, int* p_c, int line_no) {
 	r = fscanf(input_file, "%lu", &len_matrix);
 
 	if (r != 1) {
-	   	printf("%s | line_no %d\n", "ERROR: No pattern found for len_matrix", line_no);
+	   	printf("%s | line_no %d\n", "ERROR: No pattern found for len_matrix (may be due to extra new line at the end of file)", line_no);
 	   	return NULL;
  	}
 
@@ -164,19 +164,21 @@ int parse_and_multiply_matrixes(FILE* input_file, FILE* output_file) {
 
 
 int verify_argv(int argc, char * argv []) {
-	
+
+	if (argc == 1) {
+		return 0;
+	}
 	if (!strcmp(argv[1], OPT_HELP)) {
 		fprintf(stdout, HELP);
     	return 1;
-	} else if (!strcmp(argv[1], OPT_VERSION)) {
+	} 
+	if (!strcmp(argv[1], OPT_VERSION)) {
 		fprintf(stdout, VERSION);
     	return 1;
 	}
-	if (argc != 3) {
-        fprintf(stderr, "%s\n", "Error: Cantidad de parametros erronea");
-	    return -1;
-    }
-    return 0;
+    
+    fprintf(stderr, "%s\n", "Error: Wrong number of parameters.");
+	return -1;
 }
 
 
@@ -189,18 +191,8 @@ int main(int argc, char * argv []) {
     	return -r;
     }
 	
-    FILE* input_file = fopen(argv[1],"r");
-    if (!input_file) {
-    	fprintf(stderr, "File not found: %s\n", argv[1]); 
-    	return 1;
-    }
-
-    FILE* output_file = fopen(argv[2], "w"); 
-    if (!output_file) {
-    	fclose(output_file);
-    	fprintf(stderr, "File not found: %s\n", argv[2]); 
-    	return 1;
-    }
+    FILE* input_file = stdin;
+    FILE* output_file = stdout; 
 
     r = parse_and_multiply_matrixes(input_file, output_file);
     if (r < 0) {

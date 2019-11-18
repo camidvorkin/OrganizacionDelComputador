@@ -40,12 +40,12 @@ void destroy(matrix_t* m) {
 int print_matrix(FILE* fp, matrix_t* m) {
 
     size_t i = 0;
-    size_t n = m->rows * m->cols;
     int copy;
 
-    copy = fprintf(fp, "%ld", n);
+    copy = fprintf(fp, "%ld", m->rows);
     check_fprint(fp, copy);
 
+    size_t n = m->rows;
     for (; i < n ; i++) {
         copy = fprintf(fp," %f", m->array[i]);
 	    check_fprint(fp, copy);
