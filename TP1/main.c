@@ -134,7 +134,7 @@ int parse_and_multiply_matrixes(FILE* input_file, FILE* output_file) {
     	matrix_t* matrix_b = create_matrix(len_matrix, len_matrix);
     	if (!matrix_b) {
     		read_line_free(read_line);
-    		free(matrix_a);
+    		destroy_matrix(matrix_a);
     		return -2;
     	}
     	asign_values_to_matrix(matrix_b, read_line->matrix_b_values, len_matrix);
@@ -142,8 +142,8 @@ int parse_and_multiply_matrixes(FILE* input_file, FILE* output_file) {
     	matrix_t* matrix_c = matrix_multiply(matrix_a, matrix_b);
     	if (!matrix_c) {
     		read_line_free(read_line);
-    		free(matrix_a);
-    		free(matrix_b);
+    		destroy_matrix(matrix_a);
+    		destroy_matrix(matrix_b);
     		return -2;
     	}
 		print_matrix(output_file, matrix_c);
